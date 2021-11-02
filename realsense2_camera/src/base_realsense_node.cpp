@@ -261,7 +261,7 @@ BaseRealSenseNode::BaseRealSenseNode(rclcpp::Node& node,
         publishTopics();
         _toggle_sensors_srv = _node.create_service<std_srvs::srv::SetBool>(
                 "enable",
-                [&](std_srvs::srv::SetBool::Request::SharedPtr req, 
+                [&](std_srvs::srv::SetBool::Request::SharedPtr req,
                     std_srvs::srv::SetBool::Response::SharedPtr res)
                     {toggle_sensor_callback(req, res);});
 
@@ -831,7 +831,7 @@ const rmw_qos_profile_t BaseRealSenseNode::qos_string_to_qos(std::string str)
         return profile;
     }
     if (str == "EXTRINSICS_DEFAULT")
-        return rmw_qos_profile_latched;
+        return rmw_qos_profile_default;
     if (str == "PARAMETER_EVENTS")
         return rmw_qos_profile_parameter_events;
     if (str == "SERVICES_DEFAULT")
@@ -1950,7 +1950,7 @@ void BaseRealSenseNode::frame_callback(rs2::frame frame)
                         publishFrame(f, t, COLOR,
                                     _depth_aligned_image,
                                     _depth_aligned_info_publisher,
-                                    _depth_aligned_image_publishers, 
+                                    _depth_aligned_image_publishers,
                                     false,
                                     _depth_aligned_seq,
                                     _depth_aligned_camera_info,
@@ -1962,7 +1962,7 @@ void BaseRealSenseNode::frame_callback(rs2::frame frame)
                                 sip,
                                 _image,
                                 _info_publisher,
-                                _image_publishers, 
+                                _image_publishers,
                                 true,
                                 _seq,
                                 _camera_info,
@@ -2061,7 +2061,7 @@ rclcpp::Time BaseRealSenseNode::frameSystemTimeSec(rs2::frame frame)
         rclcpp::Duration elapsed_camera(rclcpp::Duration::from_nanoseconds(elapsed_camera_ns));
 #else
         rclcpp::Duration elapsed_camera(elapsed_camera_ns);
-#endif        
+#endif
         return rclcpp::Time(_ros_time_base + elapsed_camera);
     }
     else
@@ -2686,10 +2686,10 @@ void BaseRealSenseNode::publishFrame(rs2::frame f, const rclcpp::Time& t,
 
 void BaseRealSenseNode::publishMetadata(rs2::frame f, const std::string& frame_id)
 {
-    stream_index_pair stream = {f.get_profile().stream_type(), f.get_profile().stream_index()};    
+    stream_index_pair stream = {f.get_profile().stream_type(), f.get_profile().stream_index()};
     if (_metadata_publishers.find(stream) != _metadata_publishers.end())
     {
-        rclcpp::Time t(frameSystemTimeSec(f));    
+        rclcpp::Time t(frameSystemTimeSec(f));
         auto& md_publisher = _metadata_publishers.at(stream);
         if (0 != md_publisher->get_subscription_count())
         {
